@@ -19,6 +19,7 @@
   "homepage": "https://github.com/angiexyang/room-o-pedia#readme",
   "dependencies": {
     "express": "^4.17.2",
-    "mongoose": "^6.2.0"
+    "mongoose": "^6.2.0",
+    "socks": "^2.6.1"
   }
 }

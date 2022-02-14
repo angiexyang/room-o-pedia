@@ -6,8 +6,8 @@ const RoomSchema = new mongoose.Schema({
         required: true,
     },
     number: {
-        type: Number,
-        default: 0,
+        type: String,
+        required: true,
     },
 });
 
