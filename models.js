@@ -9,6 +9,34 @@ const RoomSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    features: 
+        { 
+            floor: {
+                type: String,
+                required: true,
+            },
+            occupancy: {
+                type: String, 
+                required: true,
+            },
+            cooling_system: {
+                type: String,
+                required: true,
+            },
+            storage: {
+                type: Array,
+                required: true,
+            },
+            flooring: {
+                type: String,
+                required: true,
+            },
+            other: {
+                type: Array,
+                required: false,
+            }
+        }
+    
 });
 
 

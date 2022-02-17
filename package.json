@@ -18,8 +18,9 @@
   },
   "homepage": "https://github.com/angiexyang/room-o-pedia#readme",
   "dependencies": {
-    "express": "^4.17.2",
-    "mongoose": "^6.2.0",
+    "express": "^4.17.3",
+    "mongoose": "^6.2.2",
     "multer": "^1.4.4"
-  }
+  },
+  "devDependencies": {}
 }

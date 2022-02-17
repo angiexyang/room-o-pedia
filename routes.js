@@ -89,7 +89,13 @@ app.post("/update_room", async (request, response) => {
         _id: request.get("id")
     }, {
         dorm: request.get("dorm"),
-        number: request.get("number")
+        number: request.get("number"),
+        floor: request.get("floor"),
+        occupancy: request.get("occupancy"), 
+        cooling_system: request.get("cooling_system"),
+        storage: request.get("storage"), 
+        flooring: request.get("flooring"),
+        other: request.get("other")
     }, (error) => {
         console.log("Failed to update" + error)
     })
