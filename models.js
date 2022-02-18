@@ -45,7 +45,7 @@ const ImageSchema = new mongoose.Schema({
         type: String,
         require: true,
     },
-    image:{
+    image: {
         data: Buffer,
         contentType: String
     },

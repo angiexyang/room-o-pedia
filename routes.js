@@ -27,7 +27,9 @@ const Storage = multer.diskStorage({
 
 const upload = multer({
     storage: Storage
-}).single('testImage')
+}).single('roomImage')
+
+
 
 app.post("/upload_image", async (request, response) => {
     upload(request, response, (error)=>{
@@ -48,6 +50,16 @@ app.post("/upload_image", async (request, response) => {
         }
     });
 });
+
+app.get("/images", (req, res) => {
+    allModel.Image.findOne({}, (err, data) => {
+      if (err) {
+        console.log(err);
+      } else {
+        return res.type(data.img.contentType).send(data.img.data);
+      }
+    });
+  });
 
 
 // put more specific data to make it easier for iPhone later
@@ -73,10 +85,8 @@ app.get("/rooms", async (request, response) => {
 
 
 // DELETE A ROOM
-app.post("/delete_room", async (request, response) => {
-    allModel.Room.findOneAndRemove({
-        _id: request.get("id")
-    }, (error) => {
+app.post("/delete_room/", async (request, response) => {
+    allModel.Room.findByIdAndRemove(request.body._id, (error) => {
         console.log("Failed to delete" + error)
     })
     response.send("Deleted")
@@ -84,10 +94,10 @@ app.post("/delete_room", async (request, response) => {
 
 
 // UPDATE A ROOM
-app.post("/update_room", async (request, response) => {
-    allModel.Room.findOneAndUpdate({
-        _id: request.get("id")
-    }, {
+app.put("/update_room/", async (request, response) => {
+    allModel.Room.findByIdAndUpdate(
+        request.body._id
+    , {
         dorm: request.get("dorm"),
         number: request.get("number"),
         floor: request.get("floor"),
