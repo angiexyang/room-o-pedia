@@ -1,12 +1,12 @@
 const express = require("express");
-const allModel = require("./models");
+const allModels = require("./models");
 const app = express();
 const bodyParser = require('body-parser');
 const multer = require('multer')
 
 // CREATE A ROOM
 app.post("/create_room", async (request, response) => {
-    const room = new allModel.Room(request.body);
+    const room = new allModels.Room(request.body);
 
     try {
         await room.save();
@@ -36,7 +36,7 @@ app.post("/upload_image", async (request, response) => {
         if(error){
             response.status(500).send(error)
         } else {
-            const image = new allModel.Image({
+            const image = new allModels.Image({
                 name: request.body.name,
                 image: {
                     data: request.file.filename,
@@ -52,7 +52,7 @@ app.post("/upload_image", async (request, response) => {
 });
 
 app.get("/images", (req, res) => {
-    allModel.Image.findOne({}, (err, data) => {
+    allModels.Image.findOne({}, (err, data) => {
       if (err) {
         console.log(err);
       } else {
@@ -73,7 +73,7 @@ app.get("/images", (req, res) => {
 
 // RETRIEVE ALL ROOMS
 app.get("/rooms", async (request, response) => {
-    const rooms = await allModel.Room.find({});
+    const rooms = await allModels.Room.find({});
 
     try {
         response.send(rooms);
@@ -86,7 +86,7 @@ app.get("/rooms", async (request, response) => {
 
 // DELETE A ROOM
 app.post("/delete_room/", async (request, response) => {
-    allModel.Room.findByIdAndRemove(request.body._id, (error) => {
+    allModels.Room.findByIdAndRemove(request.body._id, (error) => {
         console.log("Failed to delete" + error)
     })
     response.send("Deleted")
@@ -94,22 +94,19 @@ app.post("/delete_room/", async (request, response) => {
 
 
 // UPDATE A ROOM
-app.put("/update_room/", async (request, response) => {
-    allModel.Room.findByIdAndUpdate(
-        request.body._id
-    , {
-        dorm: request.get("dorm"),
-        number: request.get("number"),
-        floor: request.get("floor"),
-        occupancy: request.get("occupancy"), 
-        cooling_system: request.get("cooling_system"),
-        storage: request.get("storage"), 
-        flooring: request.get("flooring"),
-        other: request.get("other")
-    }, (error) => {
-        console.log("Failed to update" + error)
-    })
-    response.send("Updated")
+app.put("/update_room/:id", function(request, response) {
+    var id = request.params.id;
+    var room = request.body;
+    if (room && room._id != id) {
+        return response.status(500).json({err: "Did not find a match."});
+    }
+    allModels.Room.findByIdAndUpdate(id, room, {new: true}, function(err, room){
+        if(err) {
+            return response.status(500).json({err: err.message});
+        }
+        response.json({'room': room, message: "Room updated"});
+    });
+        
 });
 
 
