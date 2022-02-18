@@ -85,11 +85,18 @@ app.get("/rooms", async (request, response) => {
 
 
 // DELETE A ROOM
-app.post("/delete_room/", async (request, response) => {
-    allModels.Room.findByIdAndRemove(request.body._id, (error) => {
-        console.log("Failed to delete" + error)
-    })
-    response.send("Deleted")
+app.delete("/delete_room/:id", function(request, response) {
+    var id = request.params.id;
+    var room = request.body;
+    if (room && room._id != id) {
+        return response.status(500).json({err: "Did not find a match."});
+    }
+    allModels.Room.findByIdAndRemove(id, room, {new: true}, function(err, room){
+        if(err) {
+            return response.status(500).json({err: err.message});
+        }
+        response.json({'room': room, message: "Room deleted."});
+    });      
 });
 
 
