@@ -98,6 +98,9 @@ app.post("/upload_image", async (request, response) => {
     });
 });
 
+
+// RETRIEVE ALL IMAGES NOT WORKING 
+
 app.get("/images", (req, res) => {
     allModels.Image.findOne({}, (err, data) => {
       if (err) {
