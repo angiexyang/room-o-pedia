@@ -16,8 +16,56 @@ app.post("/create_room", async (request, response) => {
     }
 });
 
-// UPLOAD AN IMAGE TO DB
 
+// RETRIEVE ALL ROOMS
+app.get("/rooms", async (request, response) => {
+    const rooms = await allModels.Room.find({});
+
+    try {
+        response.send(rooms);
+    } catch (error) {
+        response.status(500).send(error);
+    }
+});
+
+
+
+// DELETE A ROOM
+app.delete("/delete_room/:id", function(request, response) {
+    var id = request.params.id;
+    var room = request.body;
+    if (room && room._id != id) {
+        return response.status(500).json({err: "Did not find a match."});
+    }
+    allModels.Room.findByIdAndRemove(id, function(err, room){
+        if(err) {
+            return response.status(500).json({err: err.message});
+        }
+        response.json({'room': room, message: "Room deleted."});
+    });      
+});
+
+
+
+// UPDATE A ROOM
+app.put("/update_room/:id", function(request, response) {
+    var id = request.params.id;
+    var room = request.body;
+    if (room && room._id != id) {
+        return response.status(500).json({err: "Did not find a match."});
+    }
+    allModels.Room.findByIdAndUpdate(id, room, {new: true}, function(err, room){
+        if(err) {
+            return response.status(500).json({err: err.message});
+        }
+        response.json({'room': room, message: "Room updated."});
+    });
+        
+});
+
+
+
+// UPLOAD AN IMAGE TO DB
 const Storage = multer.diskStorage({
     destination: 'uploads',
     filename:(req,file,cb)=>{
@@ -28,7 +76,6 @@ const Storage = multer.diskStorage({
 const upload = multer({
     storage: Storage
 }).single('roomImage')
-
 
 
 app.post("/upload_image", async (request, response) => {
@@ -61,60 +108,6 @@ app.get("/images", (req, res) => {
     });
   });
 
-
-// put more specific data to make it easier for iPhone later
-// Eg: var room = new roomModel ({
-//     dorm: request.get("dorm"),
-//     number: request.get("number"),
-//})
-// may use room.isNew to check if both server and db updated
-
-
-
-// RETRIEVE ALL ROOMS
-app.get("/rooms", async (request, response) => {
-    const rooms = await allModels.Room.find({});
-
-    try {
-        response.send(rooms);
-    } catch (error) {
-        response.status(500).send(error);
-    }
-});
-
-
-
-// DELETE A ROOM
-app.delete("/delete_room/:id", function(request, response) {
-    var id = request.params.id;
-    var room = request.body;
-    if (room && room._id != id) {
-        return response.status(500).json({err: "Did not find a match."});
-    }
-    allModels.Room.findByIdAndRemove(id, room, {new: true}, function(err, room){
-        if(err) {
-            return response.status(500).json({err: err.message});
-        }
-        response.json({'room': room, message: "Room deleted."});
-    });      
-});
-
-
-// UPDATE A ROOM
-app.put("/update_room/:id", function(request, response) {
-    var id = request.params.id;
-    var room = request.body;
-    if (room && room._id != id) {
-        return response.status(500).json({err: "Did not find a match."});
-    }
-    allModels.Room.findByIdAndUpdate(id, room, {new: true}, function(err, room){
-        if(err) {
-            return response.status(500).json({err: err.message});
-        }
-        response.json({'room': room, message: "Room updated"});
-    });
-        
-});
 
 
 module.exports = app;
