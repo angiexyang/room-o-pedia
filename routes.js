@@ -98,9 +98,11 @@ app.post("/upload_image", async (request, response) => {
     });
 });
 
+// TESTING
+app.use('/uploads', express.static('uploads'));
+
 
 // RETRIEVE ONE IMAGE INFO ONLY
-
 app.get("/images/:id", (req, res) => {
     var id = req.params.id;
     allModels.Image.findById(id, (err, imageObject) => {
@@ -113,8 +115,11 @@ app.get("/images/:id", (req, res) => {
   });
 
 
-
 module.exports = app;
+
+// TO DO DECODE BUFFER
+
+
 
 
 /*
