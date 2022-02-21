@@ -3,7 +3,7 @@ const allModels = require("./models");
 const app = express();
 const bodyParser = require('body-parser');
 const multer = require('multer')
-
+ 
 // CREATE A ROOM
 app.post("/create_room", async (request, response) => {
     const room = new allModels.Room(request.body);
@@ -87,7 +87,7 @@ app.post("/upload_image", async (request, response) => {
                 name: request.body.name,
                 image: {
                     data: request.file.filename,
-                    contentType: "image/png",
+                    contentType: request.file.mimetype,
                 },
             });
             image.save()
@@ -99,14 +99,15 @@ app.post("/upload_image", async (request, response) => {
 });
 
 
-// RETRIEVE ALL IMAGES NOT WORKING 
+// RETRIEVE ONE IMAGE INFO ONLY
 
-app.get("/images", (req, res) => {
-    allModels.Image.findOne({}, (err, data) => {
+app.get("/images/:id", (req, res) => {
+    var id = req.params.id;
+    allModels.Image.findById(id, (err, imageObject) => {
       if (err) {
         console.log(err);
       } else {
-        return res.type(data.img.contentType).send(data.img.data);
+        res.json(imageObject);
       }
     });
   });
@@ -114,3 +115,17 @@ app.get("/images", (req, res) => {
 
 
 module.exports = app;
+
+
+/*
+const upload = require("./middleware");
+
+app.post("/upload_image", upload.single("file"), async (req, res) => {
+    if (req.file === undefined) return res.send("you must select a file.");
+    const imgUrl = `http://localhost:8080/images/${req.file.filename}`;
+    return res.send(imgUrl);
+});
+
+
+module.exports = app;
+*/
