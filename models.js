@@ -9,35 +9,55 @@ const RoomSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    features: 
-        { 
-            floor: {
-                type: String,
-                required: true,
-            },
-            occupancy: {
-                type: String, 
-                required: true,
-            },
-            cooling_system: {
-                type: String,
-                required: true,
-            },
-            storage: {
-                type: Array,
-                required: true,
-            },
-            flooring: {
-                type: String,
-                required: true,
-            },
-            other: {
-                type: Array,
-                required: false,
-            }
+    features: { 
+        floor: {
+            type: String,
+            required: true,
+        },
+        occupancy: {
+            type: String, 
+            required: true,
+        },
+        cooling_system: {
+            type: String,
+            required: true,
+        },
+        storage: {
+            type: Array,
+            required: true,
+        },
+        flooring: {
+            type: String,
+            required: true,
+        },
+        other: {
+            type: Array,
+            required: false,
         }
-    
+    } 
+
 });
+
+
+
+
+
+const PhotoSchema = new mongoose.Schema({
+    dorm: {
+        type: String,
+        required: true
+    },
+    number: {
+        type: String,
+        required: true
+    },
+    photoURL: {
+        type: String
+    }
+});
+
+
+
 
 
 const ImageSchema = new mongoose.Schema({
@@ -50,6 +70,10 @@ const ImageSchema = new mongoose.Schema({
         contentType: String
     },
 });
+
+
+
+
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -66,10 +90,12 @@ const UserSchema = new mongoose.Schema({
 const Room = mongoose.model("Room", RoomSchema);
 const Image = mongoose.model("Image", ImageSchema);
 const User = mongoose.model("User", UserSchema);
+const Photo = mongoose.model("Photo", PhotoSchema);
 
 
 module.exports = {
     Room,
     Image,
     User,
+    Photo
 }

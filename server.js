@@ -62,3 +62,6 @@ app.listen(3000, () => {
     console.log("Server is running at port 3000");
 });
 
+AWS_ACCESS_KEY_ID = "AKIAWS6SSLQJVMKQ42VS"
+AWS_ACCESS_KEY_SECRET = "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"
+AWS_BUCKET_NAME = "room-o-pedia-test"
