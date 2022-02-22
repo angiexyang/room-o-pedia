@@ -87,9 +87,10 @@ const Storage = multer.memoryStorage({
 
 
 // AWS TEST 
+// FILL IN  BEFORE RUNNING 
 
-AWS_ACCESS_KEY_ID = "AKIAWS6SSLQJVMKQ42VS"
-AWS_ACCESS_KEY_SECRET = "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"
+AWS_ACCESS_KEY_ID = ""
+AWS_ACCESS_KEY_SECRET = ""
 AWS_BUCKET_NAME = "room-o-pedia-test"
 
 const filefilter = (req, file, cb)=>{
