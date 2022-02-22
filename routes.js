@@ -2,7 +2,9 @@ const express = require("express");
 const allModels = require("./models");
 const app = express();
 const bodyParser = require('body-parser');
-const multer = require('multer')
+const multer = require('multer');
+
+const Aws = require("aws-sdk");
  
 // CREATE A ROOM
 app.post("/create_room", async (request, response) => {
@@ -66,18 +68,105 @@ app.put("/update_room/:id", function(request, response) {
 
 
 // UPLOAD AN IMAGE TO DB
-const Storage = multer.diskStorage({
+/* const Storage = multer.diskStorage({
     destination: 'uploads',
     filename:(req,file,cb)=>{
         cb(null, file.originalname);
     },
+}); */
+
+
+
+
+const Storage = multer.memoryStorage({
+    destination: function(req,file,cb) {
+        cb(null, '')
+    }
 });
 
+
+
+// AWS TEST 
+
+AWS_ACCESS_KEY_ID = "AKIAWS6SSLQJVMKQ42VS"
+AWS_ACCESS_KEY_SECRET = "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"
+AWS_BUCKET_NAME = "room-o-pedia-test"
+
+const filefilter = (req, file, cb)=>{
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
+        cb(null, true);
+    } else {
+        cb(null, false);
+    }
+};
+
 const upload = multer({
-    storage: Storage
-}).single('roomImage')
+    storage: Storage, 
+    fileFilter: filefilter
+});
 
 
+const s3 = new Aws.S3({
+    accessKeyId: AWS_ACCESS_KEY_ID,
+    secretAccessKey: AWS_ACCESS_KEY_SECRET
+})
+
+// UPLOAD TO AWS AND ADD TO DB
+
+app.post('/upload_photo', upload.single('photoURL'), (req, res) => {
+    console.log(req.file)
+
+    const params = { 
+        Bucket: AWS_BUCKET_NAME,
+        Key: req.file.originalname,
+        Body: req.file.buffer, 
+        ACL:"public-read-write",
+        ContentType: req.file.mimetype
+    };
+
+    s3.upload(params, async function (error, photoObject) {
+        if(error) {
+            res.status(500).send({"err":error})
+        }
+        console.log(photoObject)
+
+        const photo =  await new allModels.Photo({
+            dorm: req.body.dorm,
+            number: req.body.number,
+            photoURL: photoObject.Location
+        });
+        photo.save()
+            .then(result => {
+                res.status(200).send({
+                    _id: result._id,
+                    dorm: result.dorm,
+                    number: result.number,
+                    photoURL: photoObject.Location,
+                })
+            })
+            .catch(err => {
+                res.send({message: err})
+            })
+    })
+})
+
+
+// RETRIEVE PHOTO OBJECTS FROM DB
+app.get("/photos", async (request, response) => {
+    const photos = await allModels.Photo.find({});
+
+    try {
+        response.send(photos);
+    } catch (error) {
+        response.status(500).send(error);
+    }
+});
+
+
+
+
+
+/*
 app.post("/upload_image", async (request, response) => {
     upload(request, response, (error)=>{
         if(error){
@@ -97,6 +186,8 @@ app.post("/upload_image", async (request, response) => {
         }
     });
 });
+*/
+
 
 // TESTING
 app.use('/uploads', express.static('uploads'));

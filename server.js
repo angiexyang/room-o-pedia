@@ -45,6 +45,10 @@ app.listen(port, console.log(`Listening on port ${port}...`));
 
 
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+
 
 mongoose.connect(
     `mongodb+srv://CARL2022:CARL2022@dormrooms.9gtby.mongodb.net/DormRooms?retryWrites=true&w=majority`,
@@ -62,6 +66,6 @@ app.listen(3000, () => {
     console.log("Server is running at port 3000");
 });
 
-AWS_ACCESS_KEY_ID = "AKIAWS6SSLQJVMKQ42VS"
-AWS_ACCESS_KEY_SECRET = "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"
-AWS_BUCKET_NAME = "room-o-pedia-test"
+
+
+
