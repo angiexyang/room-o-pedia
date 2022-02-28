@@ -18,7 +18,7 @@ app.post("/create_room", async (request, response) => {
     }
 });
 
-
+/*
 // RETRIEVE ALL ROOMS
 app.get("/rooms", async (request, response) => {
     const rooms = await allModels.Room.find({});
@@ -28,7 +28,8 @@ app.get("/rooms", async (request, response) => {
     } catch (error) {
         response.status(500).send(error);
     }
-});
+});*/
+
 
 
 
@@ -164,65 +165,49 @@ app.get("/photos", async (request, response) => {
 });
 
 
+// TEST NEW MODEL ROOM WITH PHOTO
 
+app.post('/create_room_with_photo', upload.single('photoURL'), (req, res) => {
+    console.log(req.file)
 
+    const params = { 
+        Bucket: AWS_BUCKET_NAME,
+        Key: req.file.originalname,
+        Body: req.file.buffer, 
+        ACL:"public-read-write",
+        ContentType: req.file.mimetype
+    };
 
-/*
-app.post("/upload_image", async (request, response) => {
-    upload(request, response, (error)=>{
-        if(error){
-            response.status(500).send(error)
-        } else {
-            const image = new allModels.Image({
-                name: request.body.name,
-                image: {
-                    data: request.file.filename,
-                    contentType: request.file.mimetype,
-                },
-            });
-            image.save()
-                .then(()=>response.send("Successfully uploaded"))
-                .catch(error=>console.log(error));
-
+    s3.upload(params, async function (error, photoObject) {
+        if(error) {
+            res.status(500).send({"err":error})
         }
-    });
-});
-*/
+        console.log(photoObject)
 
-
-// TESTING
-app.use('/uploads', express.static('uploads'));
-
-
-// RETRIEVE ONE IMAGE INFO ONLY
-app.get("/images/:id", (req, res) => {
-    var id = req.params.id;
-    allModels.Image.findById(id, (err, imageObject) => {
-      if (err) {
-        console.log(err);
-      } else {
-        res.json(imageObject);
-      }
-    });
-  });
-
-
-module.exports = app;
-
-// TO DO DECODE BUFFER
+        const roomWithPhoto =  await new allModels.RoomWithPhoto(req.body)
+        roomWithPhoto.photoURL = photoObject.Location;
+        roomWithPhoto.save()
+            .then(result => {
+                res.status(200).send(roomWithPhoto)
+            })
+            .catch(err => {
+                res.send({message: err})
+            })
+    })
+})
 
 
 
+// RETRIEVE ALL ROOMS WITH PHOTO
+app.get("/rooms", async (request, response) => {
+    const rooms = await allModels.RoomWithPhoto.find({});
 
-/*
-const upload = require("./middleware");
-
-app.post("/upload_image", upload.single("file"), async (req, res) => {
-    if (req.file === undefined) return res.send("you must select a file.");
-    const imgUrl = `http://localhost:8080/images/${req.file.filename}`;
-    return res.send(imgUrl);
+    try {
+        response.send(rooms);
+    } catch (error) {
+        response.status(500).send(error);
+    }
 });
 
 
 module.exports = app;
-*/
