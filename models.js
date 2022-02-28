@@ -34,7 +34,52 @@ const RoomSchema = new mongoose.Schema({
             type: Array,
             required: false,
         }
-    } 
+    }
+
+});
+
+
+
+
+const RoomWithPhotoSchema = new mongoose.Schema({
+    dorm: {
+        type: String,
+        required: true,
+    },
+    number: {
+        type: String,
+        required: true,
+    },
+    features: { 
+        floor: {
+            type: String,
+            required: true,
+        },
+        occupancy: {
+            type: String, 
+            required: true,
+        },
+        cooling_system: {
+            type: String,
+            required: true,
+        },
+        storage: {
+            type: Array,
+            required: true,
+        },
+        flooring: {
+            type: String,
+            required: true,
+        },
+        other: {
+            type: Array,
+            required: false,
+        }
+    }, 
+    photoURL: {
+        type: Array,
+        required: false
+    }
 
 });
 
@@ -60,20 +105,6 @@ const PhotoSchema = new mongoose.Schema({
 
 
 
-const ImageSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        require: true,
-    },
-    image: {
-        data: Buffer,
-        contentType: String
-    },
-});
-
-
-
-
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -88,14 +119,14 @@ const UserSchema = new mongoose.Schema({
 
 
 const Room = mongoose.model("Room", RoomSchema);
-const Image = mongoose.model("Image", ImageSchema);
 const User = mongoose.model("User", UserSchema);
 const Photo = mongoose.model("Photo", PhotoSchema);
+const RoomWithPhoto = mongoose.model("RoomWithPhoto", RoomWithPhotoSchema);
 
 
 module.exports = {
     Room,
-    Image,
     User,
-    Photo
+    Photo,
+    RoomWithPhoto,
 }
