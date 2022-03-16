@@ -30,6 +30,10 @@ const RoomSchema = new mongoose.Schema({
             type: String,
             required: true,
         },
+        window_direction: {
+            type: Array,
+            required: true,
+        },
         other: {
             type: Array,
             required: false,
@@ -69,6 +73,10 @@ const RoomWithPhotoSchema = new mongoose.Schema({
         },
         flooring: {
             type: String,
+            required: true,
+        },
+        window_direction: {
+            type: Array,
             required: true,
         },
         other: {
