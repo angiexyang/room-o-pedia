@@ -32,7 +32,7 @@ const RoomSchema = new mongoose.Schema({
         },
         window_direction: {
             type: Array,
-            required: true,
+            required: false,
         },
         other: {
             type: Array,
@@ -77,7 +77,7 @@ const RoomWithPhotoSchema = new mongoose.Schema({
         },
         window_direction: {
             type: Array,
-            required: true,
+            required: false,
         },
         other: {
             type: Array,
