@@ -154,6 +154,26 @@ const multipleUpload = multer ({
     storage: Storage 
 }).array('photoURL');
 
+
+
+app.put("/add_photoUrl/:id", function(request, response) {
+    var id = request.params.id;
+    var room = request.body;
+    if (room && room._id != id) {
+        return response.status(500).json({err: "Did not find a match."});
+    }
+    allModels.RoomWithPhoto.findByIdAndUpdate(id, room, {new: true}, function(err, room){
+        if(err) {
+            return response.status(500).json({err: err.message});
+        }
+        response.json({'room': room, message: "Room updated."});
+    });
+        
+});
+
+
+
+
 app.post('/create_room_with_photos', multipleUpload, function (req, res) {
     const photos = req.files;
     var photoURLs = [];
